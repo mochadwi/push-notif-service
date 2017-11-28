@@ -17,7 +17,10 @@ import (
 func SendGMToClient(c *gin.Context) {
 	var msg gcm.HttpMessage
 	serverKey := c.Query("server_key")
-	data := map[string]interface{}{"message": c.Query("message")}
+	data := map[string]interface{}{
+		"title": c.Query("title"),
+		"body":  c.Query("body")}
+
 	regIDs := []string{c.Query("client_token")}
 	msg.RegistrationIds = regIDs
 	msg.Data = data
