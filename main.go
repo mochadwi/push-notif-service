@@ -15,11 +15,15 @@ func main() {
 	var baseURL = "/api/v1"
 	engine := gin.Default()
 	engine.RedirectTrailingSlash = false
+	// engine.Use(utils.Middleware)
 
 	v1 := engine.Group(baseURL)
 	{
-		// single-devices push notif
+		// single-device push notif
 		v1.POST("/push-notif", fcm.SendGMToClient)
+
+		// multiple devices push notif
+		v1.POST("/device/:any/notifications", fcm.SendGMToClients)
 	}
 
 	engine.NoRoute(func(c *gin.Context) {
