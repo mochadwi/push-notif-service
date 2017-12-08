@@ -29,31 +29,21 @@ func main() {
 	db.AutoMigrate(&Person{})
 
 	r := gin.Default()
-	r.GET("/list-notifiers", GetProjects)
+	r.GET("/people", GetPeople)
+	r.GET("/people/:id", GetPerson)
+	r.POST("/people", CreatePerson)
 
 	r.Run(":8080")
-
-	p1 := Person{FirstName: "Iqbal", LastName: "Dwi"}
-	p2 := Person{FirstName: "Mochamad", LastName: "Cahyo"}
-
-	// insert value from p1 & p2 person
-	db.Create(&p1)
-	db.Create(&p2)
-
-	var p3 Person
-
-	// find the first row on the table
-	db.First(&p3)
-
-	fmt.Print("p1: ")
-	fmt.Println(p1)
-	fmt.Print("p2: ")
-	fmt.Println(p2)
-	fmt.Print("p3: ")
-	fmt.Println(p3)
 }
 
-func GetProjects(c *gin.Context) {
+func CreatePerson(c *gin.Context) {
+	var person Person
+	c.BindJSON(&person)
+	db.Create(&person)
+	c.JSON(200, person)
+ }
+
+func GetPeople(c *gin.Context) {
 	var people []Person
 	if err := db.Find(&people).Error; err != nil {
 		c.AbortWithStatus(404)
@@ -62,3 +52,14 @@ func GetProjects(c *gin.Context) {
 		c.JSON(200, people)
 	}
 }
+
+func GetPerson(c *gin.Context) {
+	id := c.Params.ByName("id")
+	var person Person
+	if err := db.Where("id = ?", id).First(&person).Error; err != nil {
+		 c.AbortWithStatus(404)
+		 fmt.Println(err)
+	} else {
+		 c.JSON(200, person)
+	}
+ }
