@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
@@ -13,13 +14,24 @@ type Person struct {
 	LastName  string `json:"lastname"`
 }
 
+var db *gorm.DB
+var err error
+
 // RegisterNotifier will push a message to single client
 func main() {
-	db, _ := gorm.Open("sqlite3", "./gorm.db")
+	db, err = gorm.Open("sqlite3", "./gorm.db")
+	if err != nil {
+		fmt.Println(err)
+	}
 	defer db.Close()
 
 	// migrate scheme to Person struct
 	db.AutoMigrate(&Person{})
+
+	r := gin.Default()
+	r.GET("/list-notifiers", GetProjects)
+
+	r.Run(":8080")
 
 	p1 := Person{FirstName: "Iqbal", LastName: "Dwi"}
 	p2 := Person{FirstName: "Mochamad", LastName: "Cahyo"}
@@ -39,4 +51,14 @@ func main() {
 	fmt.Println(p2)
 	fmt.Print("p3: ")
 	fmt.Println(p3)
+}
+
+func GetProjects(c *gin.Context) {
+	var people []Person
+	if err := db.Find(&people).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	} else {
+		c.JSON(200, people)
+	}
 }
