@@ -1,0 +1,117 @@
+swagger: '2.0'
+info:
+  description: This is a Psithurism Service
+  version: 1.0.0
+  title: Create a Notifier API
+  # put the contact info for your development or API team
+  contact:
+    email: mochadwi@nobackend.id
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags are used for organizing operations
+tags:
+- name: developers
+  description: Operations available to regular developers
+
+paths:
+  /notifiers:
+    post:
+      tags:
+      - developers
+      summary: create a notifiers
+      operationId: createNotifier
+      description: |
+        By passing in the appropriate params, you can create a notifier to register your server key from (FCM or APNS)
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: name
+        description: pass a notifier name for registering your notifier
+        required: true
+        type: string
+      - in: query
+        name: provider
+        description: pass a provider name (google or apple)
+        required: true
+        type: string
+      - in: query
+        name: apiKey
+        description: pass a server key from (FCM or APNS)
+        required: true
+        type: string
+      responses:
+        200:
+          description: results registered notifier data
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/SuccessResponse'
+          examples:
+            application/json:
+              requestID: d290f1ee-6c54-4b01-90e6-d701748f0851
+              now: 1511937963
+              code: 20001
+              message: OK
+              data: 
+                uuid: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                provider: "google"
+                name: "Android Apps"
+                created: 1511937963
+                modified: 1511937963
+        400:
+          description: bad input parameter
+definitions:
+  SuccessResponse:
+    type: object
+    required:
+    - requestID
+    - now
+    - code
+    - message
+    - data
+    properties:
+      requestID:
+        type: string
+        format: uuidv4
+        example: 02010ce8-6878-4547-b3c0-e5592086a802
+      now:
+        type: integer
+        format: unix_timestamp
+        example: 1511859232
+      message:
+        type: string
+        example: "OK"
+      code:
+        type: string
+        example: "20001"
+      data:
+        type: object
+        $ref: '#/definitions/DataItem'
+  DataItem:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "Android Apps"
+      provider:
+        type: string
+        example: "google"
+      created:
+        type: integer
+        format: unix_timestamp
+        example: 1511859232
+      modified:
+        type: integer
+        format: unix_timestamp
+        example: 1511859233
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+# basePath: /NoBackend/api/v1/pushnotif
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+basePath: /NoBackend/push-notif/1.0.0
