@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
-	fcm "gitlab.com/nobackend-repo/push-notif-service/controllers"
+	controllers "gitlab.com/nobackend-repo/push-notif-service/controllers"
 	Index "gitlab.com/nobackend-repo/push-notif-service/views"
 )
 
@@ -19,11 +19,16 @@ func main() {
 
 	v1 := engine.Group(baseURL)
 	{
+		// create a notifier
+		v1.POST("/notifier", controllers.CreateNotifier)
+
+		v1.GET("/notifiers", controllers.GetNotifiers)
+
 		// single-device push notif
-		v1.POST("/push-notif", fcm.SendGMToClient)
+		v1.POST("/push-notif", controllers.SendGMToClient)
 
 		// multiple devices push notif
-		v1.POST("/device/:any/notifications", fcm.SendGMToClients)
+		v1.POST("/device/:any/notifications", controllers.SendGMToClients)
 	}
 
 	engine.NoRoute(func(c *gin.Context) {
