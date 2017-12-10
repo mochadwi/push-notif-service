@@ -37,7 +37,7 @@ func init() {
 }
 
 func (mgr *manager) AddNotifier(notifier *models.NotifierItem) (err error) {
-	mgr.db.Debug().AutoMigrate(&models.NotifierItem{})
+	// mgr.db.Debug().AutoMigrate(&models.NotifierItem{})
 	notifier.Create(mgr.db)
 	if errs := mgr.db.GetErrors(); len(errs) > 0 {
 		err = errs[0]
@@ -48,14 +48,14 @@ func (mgr *manager) AddNotifier(notifier *models.NotifierItem) (err error) {
 }
 
 func (mgr *manager) ShowNotifier(notifier *[]models.NotifierItem) (err error) {
-	mgr.db.Debug().AutoMigrate(&models.NotifierItem{}) // mgr.db.AutoMigrate(&models.NotifierItem{})
-	tempNotifier := []models.NotifierItem{}
-	if err := models.NewNotifierItemQuerySet(mgr.db).All(&tempNotifier); err != nil {
+	// mgr.db.Debug().AutoMigrate(&models.NotifierItem{}) // mgr.db.AutoMigrate(&models.NotifierItem{})
+	// tempNotifier := []models.NotifierItem{}
+	if err := models.NewNotifierItemQuerySet(mgr.db).All(notifier); err != nil {
 		fmt.Print("[notifier] query_all: ")
 		fmt.Println(err)
 		return err
 	}
-	notifier = &tempNotifier
+	// notifier = &tempNotifier
 	fmt.Print("[notifier] result: ")
 	fmt.Println(notifier)
 	return
