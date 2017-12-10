@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	models "gitlab.com/nobackend-repo/push-notif-service/models"
+	"gitlab.com/nobackend-repo/push-notif-service/models"
 	db "gitlab.com/nobackend-repo/push-notif-service/utils"
 )
 
@@ -18,12 +18,25 @@ func CreateNotifier(c *gin.Context) {
 
 // GetNotifiers all available list
 func GetNotifiers(c *gin.Context) {
-	var notifier []models.NotifierItem
-	if err := db.Mgr.ShowNotifier(notifier); err != nil {
+	notifier := []models.NotifierItem{}
+	// var i int
+
+	if err := db.Mgr.ShowNotifier(&notifier); err != nil {
 		c.AbortWithStatus(404)
-		fmt.Print("GetNotifiers: ")
-		fmt.Print(err)
 	} else {
+		// for _, item := range notifier {
+		// 	completed := false
+		// 	if item.Completed == 1 {
+		// 		completed = true
+		// 	} else {
+		// 		completed = false
+		// 	}
+		// 	// _todos = append(_todos, transformedTodo{ID: item.ID, Title: item.Title, Completed: completed})
+		// 	fmt.Print()
+		// }
+		// notifier = models.NotifierItemDBSchema}
+		fmt.Print("[notifier] results: ")
+		fmt.Print(notifier)
 		c.JSON(200, notifier)
 	}
 }
