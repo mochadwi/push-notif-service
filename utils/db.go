@@ -12,7 +12,8 @@ import (
 // Manager interface
 type Manager interface {
 	AddNotifier(notifier *models.NotifierItem) error
-	ShowNotifier(notifier *[]models.NotifierItem) error
+	ShowAllNotifier(notifier *[]models.NotifierItem) error
+	ShowNotifier(name string, notifier *models.NotifierItem) error
 	// Add other methods
 }
 
@@ -47,16 +48,26 @@ func (mgr *manager) AddNotifier(notifier *models.NotifierItem) (err error) {
 	return
 }
 
-func (mgr *manager) ShowNotifier(notifier *[]models.NotifierItem) (err error) {
+func (mgr *manager) ShowAllNotifier(notifier *[]models.NotifierItem) (err error) {
 	// mgr.db.Debug().AutoMigrate(&models.NotifierItem{}) // mgr.db.AutoMigrate(&models.NotifierItem{})
 	// tempNotifier := []models.NotifierItem{}
 	if err := models.NewNotifierItemQuerySet(mgr.db).All(notifier); err != nil {
-		fmt.Print("[notifier] query_all: ")
-		fmt.Println(err)
+		// fmt.Print("[notifier] query_all: ")
+		// fmt.Println(err)
 		return err
 	}
 	// notifier = &tempNotifier
+	// fmt.Print("[notifier] result: ")
+	// fmt.Println(notifier)
+	return
+}
+
+func (mgr *manager) ShowNotifier(name string, notifier *models.NotifierItem) (err error) {
+	if err := models.NewNotifierItemQuerySet(mgr.db).NameEq(name).One(notifier); err != nil {
+		return err
+	}
+
 	fmt.Print("[notifier] result: ")
-	fmt.Println(notifier)
+	fmt.Println(err)
 	return
 }

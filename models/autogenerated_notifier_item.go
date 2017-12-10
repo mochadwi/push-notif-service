@@ -19,7 +19,7 @@ type NotifierItemQuerySet struct {
 // NewNotifierItemQuerySet constructs new NotifierItemQuerySet
 func NewNotifierItemQuerySet(db *gorm.DB) NotifierItemQuerySet {
 	return NotifierItemQuerySet{
-		db: db.Model(&NotifierItem{}),
+		db: db.Debug().Model(&NotifierItem{}),
 	}
 }
 
