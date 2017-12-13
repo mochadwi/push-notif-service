@@ -38,28 +38,27 @@ func init() {
 }
 
 func (mgr *manager) AddNotifier(notifier *models.NotifierItem) (err error) {
+
 	var tempNotifier models.NotifierItem
-	if err := models.NewNotifierItemQuerySet(mgr.db).NameEq(notifier.Name).One(&tempNotifier); err != nil {
-		fmt.Print("[error] addnotifier: ")
-		fmt.Println(err)
-		return err
-	}
+	models.NewNotifierItemQuerySet(mgr.db).NameEq(notifier.Name).One(&tempNotifier)
 
 	if tempNotifier.Name != notifier.Name {
+		// Create
 		notifier.Create(mgr.db)
+
 		if errs := mgr.db.GetErrors(); len(errs) > 0 {
 			err = errs[0]
-			fmt.Print("[error] addnotifier: ")
+			fmt.Print("[error] addnotifier - create query: ")
 			fmt.Println(err)
 			return err
-		}
-	} else {
-		fmt.Print("[error] addnotifier: ")
-		fmt.Println("Duplicate notifier names")
-		return fmt.Errorf("%s", "Duplicate notifier names")
+		} // end Create
+
+		return
 	}
 
-	return
+	fmt.Print("[error] addnotifier - duplicate found: ")
+	fmt.Println("duplicate entry")
+	return fmt.Errorf("%s", "duplicate entry")
 }
 
 func (mgr *manager) ShowAllNotifier(notifier *[]models.NotifierItem) (err error) {
