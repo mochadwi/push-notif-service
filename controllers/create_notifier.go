@@ -35,7 +35,7 @@ func CreateNotifier(c *gin.Context) {
 		response.Message = "OK"
 		response.Data = notifier
 
-		c.JSON(http.StatusOK, response)
+		c.JSON(http.StatusCreated, response)
 	}
 }
 
