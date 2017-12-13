@@ -2,21 +2,44 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 	"gitlab.com/nobackend-repo/push-notif-service/models"
 	db "gitlab.com/nobackend-repo/push-notif-service/utils"
+	Index "gitlab.com/nobackend-repo/push-notif-service/views"
 )
 
 // CreateNotifier register a notifier
 func CreateNotifier(c *gin.Context) {
 	var notifier models.NotifierItem
 	c.BindJSON(&notifier)
-	db.Mgr.AddNotifier(&notifier)
-	c.JSON(200, notifier)
+
+	err := db.Mgr.AddNotifier(&notifier)
+
+	var response = &Index.DefaultResponseFormat{
+		RequestID: uuid.NewV4().String(),
+		Now:       time.Now().Unix(),
+	}
+
+	if err != nil {
+		response.Code = strconv.Itoa(http.StatusBadRequest) + "01"
+		response.Message = err.Error()
+
+		c.JSON(http.StatusBadRequest, response)
+	} else {
+		response.Code = strconv.Itoa(http.StatusOK) + "01"
+		response.Message = "OK"
+		response.Data = notifier
+
+		c.JSON(http.StatusOK, response)
+	}
 }
 
-// GetNotifiers all available list
+// GetAllNotifier all available list
 func GetAllNotifier(c *gin.Context) {
 	notifier := []models.NotifierItem{}
 

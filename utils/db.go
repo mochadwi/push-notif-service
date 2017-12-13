@@ -38,36 +38,47 @@ func init() {
 }
 
 func (mgr *manager) AddNotifier(notifier *models.NotifierItem) (err error) {
-	// mgr.db.Debug().AutoMigrate(&models.NotifierItem{})
-	notifier.Create(mgr.db)
-	if errs := mgr.db.GetErrors(); len(errs) > 0 {
-		err = errs[0]
-		fmt.Print("[notifier] create: ")
-		fmt.Println(notifier)
+	var tempNotifier models.NotifierItem
+	if err := models.NewNotifierItemQuerySet(mgr.db).NameEq(notifier.Name).One(&tempNotifier); err != nil {
+		fmt.Print("[error] addnotifier: ")
+		fmt.Println(err)
+		return err
 	}
+
+	if tempNotifier.Name != notifier.Name {
+		notifier.Create(mgr.db)
+		if errs := mgr.db.GetErrors(); len(errs) > 0 {
+			err = errs[0]
+			fmt.Print("[error] addnotifier: ")
+			fmt.Println(err)
+			return err
+		}
+	} else {
+		fmt.Print("[error] addnotifier: ")
+		fmt.Println("Duplicate notifier names")
+		return fmt.Errorf("%s", "Duplicate notifier names")
+	}
+
 	return
 }
 
 func (mgr *manager) ShowAllNotifier(notifier *[]models.NotifierItem) (err error) {
-	// mgr.db.Debug().AutoMigrate(&models.NotifierItem{}) // mgr.db.AutoMigrate(&models.NotifierItem{})
-	// tempNotifier := []models.NotifierItem{}
 	if err := models.NewNotifierItemQuerySet(mgr.db).All(notifier); err != nil {
-		// fmt.Print("[notifier] query_all: ")
-		// fmt.Println(err)
+		fmt.Print("[error] showallnotifier: ")
+		fmt.Println(err)
 		return err
 	}
-	// notifier = &tempNotifier
-	// fmt.Print("[notifier] result: ")
-	// fmt.Println(notifier)
 	return
 }
 
 func (mgr *manager) ShowNotifier(name string, notifier *models.NotifierItem) (err error) {
 	if err := models.NewNotifierItemQuerySet(mgr.db).NameEq(name).One(notifier); err != nil {
+		fmt.Print("[error] shownotifier: ")
+		fmt.Println(err)
 		return err
 	}
 
-	fmt.Print("[notifier] result: ")
-	fmt.Println(err)
+	// fmt.Print("[success] shownotifier: ")
+	// fmt.Println(err)
 	return
 }
