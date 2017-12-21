@@ -40,8 +40,40 @@ paths:
             #   name: apiKey
             #   description: pass a server key from (FCM or APNS)
       responses:
+        201:
+          description: notifier data created
+          schema:
+            $ref: '#/definitions/DefaultResponse'
+        400:
+          description: bad input parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /devices/*/notifications:
+    post:
+      tags:
+      - developers
+      summary: push to devices list
+      operationId: pushToDevices
+      description: |
+        By passing in the appropriate params, you can sends push notification to a list of devices
+      consumes:
+      - application/json
+      parameters:
+        - in: body
+          name: payloads
+          description: The message and notifier destination.
+          schema:
+            $ref: '#/definitions/NotifierRequest'
+            #   name: name
+            #   description: pass a notifier name for registering
+            #   name: provider
+            #   description: pass a provider name (google or apple)
+            #   name: apiKey
+            #   description: pass a server key from (FCM or APNS)
+      responses:
         200:
-          description: registered notifier data
+          description: sends successful
           schema:
             $ref: '#/definitions/DefaultResponse'
         400:

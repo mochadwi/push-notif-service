@@ -25,6 +25,7 @@ func main() {
 		v1.GET("/notifiers", controllers.GetAllNotifier)
 
 		v1.GET("/notifier/:name", controllers.GetNotifier)
+
 		// single-device push notif
 		v1.POST("/push-notif", controllers.SendGMToClient)
 

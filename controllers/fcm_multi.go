@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -15,8 +16,11 @@ import (
 func SendGMToClients(c *gin.Context) {
 	var msg gcm.HttpMessage
 	serverKey := c.Query("server_key")
-	data := map[string]interface{}{"message": c.Query("message")}
-	regIDs := []string{c.Query("client_token")}
+	data := map[string]interface{}{
+		"title": c.Query("title"),
+		"body":  c.Query("body")}
+
+	regIDs := strings.Split(c.Query("client_token"), ",")
 	msg.RegistrationIds = regIDs
 	msg.Data = data
 	gcmResp, err := gcm.SendHttp(serverKey, msg)
