@@ -1,11 +1,11 @@
 swagger: '2.0'
 info:
-  description: This is a Psithurism Service
+  description: This is a Push Notif Service
   version: 1.0.0
-  title: Psithurism API
+  title: Push Notif API
   # put the contact info for your development or API team
   contact:
-    email: mochadwi@nobackend.id
+    email: test@nobackend.id
 
   license:
     name: Apache 2.0
@@ -17,7 +17,7 @@ tags:
   description: Operations available to regular developers
 
 paths:
-  /notifiers:
+  /push/notifiers:
     post:
       tags:
       - developers
@@ -49,7 +49,7 @@ paths:
           schema:
             $ref: '#/definitions/ErrorResponse'
 
-  /devices/*/notifications:
+  /push/device:
     post:
       tags:
       - developers
@@ -57,6 +57,38 @@ paths:
       operationId: pushToDevices
       description: |
         By passing in the appropriate params, you can sends push notification to a list of devices
+      consumes:
+      - application/json
+      parameters:
+        - in: body
+          name: payloads
+          description: The message and notifier destination.
+          schema:
+            $ref: '#/definitions/NotifierRequest'
+            #   name: name
+            #   description: pass a notifier name for registering
+            #   name: provider
+            #   description: pass a provider name (google or apple)
+            #   name: apiKey
+            #   description: pass a server key from (FCM or APNS)
+      responses:
+        200:
+          description: sends successful
+          schema:
+            $ref: '#/definitions/DefaultResponse'
+        400:
+          description: bad input parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  
+  /push/topic:
+    post:
+      tags:
+      - developers
+      summary: push to specific topic
+      operationId: pushToTopic
+      description: |
+        By passing in the appropriate params, you can sends push notification to specific topic
       consumes:
       - application/json
       parameters:
@@ -173,10 +205,37 @@ definitions:
         type: integer
         format: unix_timestamp
         example: 1511859233
+  
+  PushNotifRequest:
+    type: object
+    properties:
+      notifier:
+        type: string
+        example: "Android Apps"
+      message:
+        $ref: '#/definitions/MessageItem'
+  
+  MessageItem:
+    type: object
+    properties:
+      title:
+        type: string
+        example: "Title here!"
+      body:
+        type: string
+        example: "Hello, this is messages!"
 # Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
+# host: nobackend.id
 # basePath: /NoBackend/api/v1/pushnotif
 schemes:
  - https
 # Added by API Auto Mocking Plugin
-basePath: /NoBackend/push-notif/1.0.0
+# basePath: /NoBackend/push-notif/1.0.0
+# Added by API Auto Mocking Plugin
+# basePath: /api/v1/
+# Added by API Auto Mocking Plugin
+# host: nobackend.id
+# basePath: /api/v1
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /NoBackend/push-notifier/1.0.0
